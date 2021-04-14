@@ -40,8 +40,8 @@ import {
   ResultEntry } from "./stats";
 ```
 
-- In actual covid-19 data we will add information about some communities more: Ceuta and Melilla that were missing in the previous data of covid-19 infections.
-- It was necessary to add the latitude and longitude for these two in communities.ts file.
+- In actual covid-19 data we will add information about some communities more: Ceuta, Melilla and Navarra that were missing in the previous data of covid-19 infections.
+- It was necessary to add the latitude and longitude for Ceuta and Melilla in communities.ts file.
 
 _./src/communities.ts_
 ```typescript

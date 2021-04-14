@@ -85,11 +85,6 @@ export const latLongCommunities = [
     lat: 42.465,
   },
   {
-    name: "Navarra",
-    long: -1.65,
-    lat: 42.816666,
-  },
-  {
     name: "Ceuta",
     long: -5.3162,
     lat: 35.8883,
