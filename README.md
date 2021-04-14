@@ -30,6 +30,8 @@ _./src/index.html_
 - Let's import the data of the actual number of people infected in one day (data collected on 12/04/2021):
 - Wep page: https://www.eldiario.es/sociedad/mapa-datos-coronavirus-espana-comunidades-autonomas-abril-9_1_1039633.html
 
+_./src/index.ts_
+
 ```diff
 import * as d3 from "d3";
 import { 
@@ -55,10 +57,7 @@ _./src/communities.ts_
   },
 ```
 
-
-//////////////////////////////////////////////////
-
-- In this case the maximum number of affected of all communities will vary in function of the previous or actual data, that is why we define this maximum as a function depending on the date stat:
+- In this case the maximum number of affected people of all communities will vary in function of the previous or actual data, that is why we define this maximum as a function depending on the date stat:
 
 _./src/index.ts_
 
@@ -68,7 +67,7 @@ const maxAffected = (stats: ResultEntry[]) => {
   (max, item) => (item.value > max ? item.value : max), 0)
 };
 ```
-- Instead of creating a scale map affected to radius size we will calculate the size of the circle directly in the function calculateRaiusOnAffectedCases. What we return is the division between the number of cases and the maximum number of cases (maxAffected) and multiply it by 40 pixels:
+- Instead of creating a scale map affected to radius size we will calculate the size of the circle directly in the function calculateRaiusOnAffectedCases. What we return is the division between the number of cases in a community and the maximum number of cases of all the comunities (maxAffected) and multiply it by 40 pixels:
 
 _./src/index.ts_
 
@@ -83,24 +82,8 @@ const calculateRadiusBasedOnAffectedCases = (
   return entry ? (entry.value/max)*40 : 0;
 }
 ```
-////
-- Let's tie it up with the circle rendering code that we created above:
 
-_./src/index.ts_
-
-```diff
-svg
-  .selectAll("circle")
-  .data(latLongCommunities)
-  .enter()
-  .append("circle")
--  .attr("r", 15)
-+  .attr("r", d => calculateRadiusBasedOnAffectedCases(d.name))
-  .attr("cx", d => aProjection([d.long, d.lat])[0])
-  .attr("cy", d => aProjection([d.long, d.lat])[1]);
-```
-////
-- I have changed the map color and the circles' color and trnsparency:
+- I have changed the map color and the circles' color and transparency:
 
 _./src/map.css_
 
@@ -118,72 +101,6 @@ _./src/map.css_
   fill-opacity: 0.5;
 }
 ```
-
-
-///////////////////////////////////////////////////////77
-- Let's apply this style to the black circles that we are rendering:
-
-_./src/index.ts_
-
-```diff
-svg
-  .selectAll("circle")
-  .data(latLongCommunities)
-  .enter()
-  .append("circle")
-+  .attr("class", "affected-marker")
-  .attr("r", d => calculateRadiusBasedOnAffectedCases(d.name))
-  .attr("cx", d => aProjection([d.long, d.lat])[0])
-  .attr("cy", d => aProjection([d.long, d.lat])[1]);
-```
-
-- Just to wrap up let's remove features that we are not using for this chart
-  (highlight a given community on mouse hover).
-
-_./src/index.ts_
-
-```diff
-svg
-  .selectAll("path")
-  .data(geojson["features"])
-  .enter()
-  .append("path")
-  .attr("class", "country")
-  // data loaded from json file
-  .attr("d", geoPath as any)
--  .on("mouseover", function(d, i) {
--    d3.select(this).attr("class", "selected-country");
--  })
--  .on("mouseout", function(d, i) {
--    d3.select(this).attr("class", "country");
--  });
-```
-
-./src/map.css
-
-```diff
-.country {
-  stroke-width: 1;
-  stroke: #2f4858;
-  fill: #008c86;
-}
-
-- .selected-country {
--  stroke-width: 1;
--  stroke: #bc5b40;
--  fill: #f88f70;
-- }
-
-.affected-marker {
-  stroke-width: 1;
-  stroke: #bc5b40;
-  fill: #f88f70;
-  fill-opacity: 0.7;
-}
-```
-
-
-/////////////////////////////////
 
 - Let's add a method to swap the data we are using (e.g. swap Actual results with the last results in 2021),
   we will append all this code at the end of the index.ts file:
@@ -224,7 +141,6 @@ document
 ```
 
 
-/////////////////////////////////////////////////////////////
 
 # About Basefactor + Lemoncode
 
