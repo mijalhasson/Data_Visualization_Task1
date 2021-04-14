@@ -40432,6 +40432,18 @@ var latLongCommunities = [{
   name: "La Rioja",
   long: -2.445556,
   lat: 42.465
+}, {
+  name: "Navarra",
+  long: -1.6624,
+  lat: 42.8058
+}, {
+  name: "Ceuta",
+  long: -5.3162,
+  lat: 35.8883
+}, {
+  name: "Melilla",
+  long: -2.93848,
+  lat: 35.2919
 }];
 exports.latLongCommunities = latLongCommunities;
 },{}],"stats.ts":[function(require,module,exports) {
@@ -40539,6 +40551,15 @@ var statsActual = [{
 }, {
   name: "Islas Baleares",
   value: 71
+}, {
+  name: "Navarra",
+  value: 311
+}, {
+  name: "Ceuta",
+  value: 43
+}, {
+  name: "Melilla",
+  value: 39
 }];
 exports.statsActual = statsActual;
 },{}],"index.ts":[function(require,module,exports) {
@@ -40571,7 +40592,7 @@ var calculateRadiusBasedOnAffectedCases = function calculateRadiusBasedOnAffecte
   var entry = stats.find(function (item) {
     return item.name === comunidad;
   });
-  return entry ? entry.value / max * 30 : 0;
+  return entry ? entry.value / max * 40 : 0;
 };
 
 var svg = d3.select("body").append("svg").attr("width", 1024).attr("height", 800).attr("style", "background-color: #FBFAF0");
@@ -40590,11 +40611,11 @@ document.getElementById("Actual").addEventListener("click", function handleResul
   updateChart(_stats.statsActual);
 });
 
-var updateChart = function updateChart(dataset) {
+var updateChart = function updateChart(stat) {
   console.log("updating");
   svg.selectAll("circle").remove();
   return svg.selectAll("circle").data(_communities.latLongCommunities).enter().append("circle").attr("class", "affected-marker").attr("r", function (d) {
-    return calculateRadiusBasedOnAffectedCases(d.name, dataset);
+    return calculateRadiusBasedOnAffectedCases(d.name, stat);
   }).attr("cx", function (d) {
     return aProjection([d.long, d.lat])[0];
   }).attr("cy", function (d) {
@@ -40686,7 +40707,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51976" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63680" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

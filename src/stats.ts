@@ -136,4 +136,16 @@ export const statsActual:  ResultEntry[] = [
     name: "Islas Baleares",
     value: 71,
   },
+  {
+    name: "Navarra",
+    value: 311,
+  },
+  {
+    name: "Ceuta",
+    value: 43,
+  },
+  {
+    name: "Melilla",
+    value: 39,
+  },
 ];

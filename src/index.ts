@@ -17,7 +17,7 @@ const calculateRadiusBasedOnAffectedCases = (
   var max = <number>maxAffected(stats);
   const entry = stats.find((item) => item.name === comunidad);
   
-  return entry ? (entry.value/max)*30 : 0;
+  return entry ? (entry.value/max)*40 : 0;
 }
 
 const svg = d3
@@ -59,7 +59,7 @@ document
     updateChart(statsActual);
   });
 
-const updateChart = (dataset: ResultEntry[]) => {
+const updateChart = (stat: ResultEntry[]) => {
   console.log("updating")
   svg.selectAll("circle").remove();
   return svg
@@ -68,7 +68,7 @@ const updateChart = (dataset: ResultEntry[]) => {
     .enter()
     .append("circle")
     .attr("class", "affected-marker")
-    .attr("r", (d) => calculateRadiusBasedOnAffectedCases(d.name, dataset))
+    .attr("r", (d) => calculateRadiusBasedOnAffectedCases(d.name, stat))
     .attr("cx", (d) => aProjection([d.long, d.lat])[0])
     .attr("cy", (d) => aProjection([d.long, d.lat])[1]);
 };
