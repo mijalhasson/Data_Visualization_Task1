@@ -5,20 +5,26 @@ const d3Composite = require("d3-composite-projections");
 import { latLongCommunities } from "./communities";
 import { statsPrevious, statsActual, ResultEntry } from "./stats";
 
-const maxAffected = (stats: ResultEntry[]) => {
-  return stats.reduce(
-  (max, item) => (item.value > max ? item.value : max), 0)
-};
+
+const maxAffected = statsPrevious.reduce(
+  (max, item) => (item.value > max ? item.value : max),
+  0
+);
+
+const affectedRadiusScale = d3
+  .scaleLinear()
+  .domain([0, <any>maxAffected])
+  .range([0, 50]); // 50 pixel max radius, we could calculate it relative to width and height
 
 const calculateRadiusBasedOnAffectedCases = (
   comunidad: string,
-  stats: ResultEntry[]
+  dataset: ResultEntry[]
 ) => {
-  var max = <number>maxAffected(stats);
-  const entry = stats.find((item) => item.name === comunidad);
-  
-  return entry ? (entry.value/max)*40 : 0;
-}
+  const entry = dataset.find((item) => item.name === comunidad);
+
+  // It is necessary to scale the numbers because they differ a lot from the previous and the actuals
+  return entry ? Math.log(affectedRadiusScale(entry.value))*5 + 1 : 0;
+};
 
 const svg = d3
   .select("body")
@@ -59,16 +65,17 @@ document
     updateChart(statsActual);
   });
 
-const updateChart = (stat: ResultEntry[]) => {
-  console.log("updating")
+const updateChart = (stats: ResultEntry[]) => {
   svg.selectAll("circle").remove();
-  return svg
+  svg
     .selectAll("circle")
     .data(latLongCommunities)
     .enter()
     .append("circle")
     .attr("class", "affected-marker")
-    .attr("r", (d) => calculateRadiusBasedOnAffectedCases(d.name, stat))
+    .attr("r", (d) => calculateRadiusBasedOnAffectedCases(d.name, stats))
     .attr("cx", (d) => aProjection([d.long, d.lat])[0])
-    .attr("cy", (d) => aProjection([d.long, d.lat])[1]);
+    .attr("cy", (d) => aProjection([d.long, d.lat])[1])
 };
+
+

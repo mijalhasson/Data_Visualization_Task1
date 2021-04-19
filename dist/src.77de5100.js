@@ -40577,18 +40577,18 @@ var spainjson = require("./spain.json");
 
 var d3Composite = require("d3-composite-projections");
 
-var maxAffected = function maxAffected(stats) {
-  return stats.reduce(function (max, item) {
-    return item.value > max ? item.value : max;
-  }, 0);
-};
+var maxAffected = _stats.statsPrevious.reduce(function (max, item) {
+  return item.value > max ? item.value : max;
+}, 0);
 
-var calculateRadiusBasedOnAffectedCases = function calculateRadiusBasedOnAffectedCases(comunidad, stats) {
-  var max = maxAffected(stats);
-  var entry = stats.find(function (item) {
+var affectedRadiusScale = d3.scaleLinear().domain([0, maxAffected]).range([0, 50]); // 50 pixel max radius, we could calculate it relative to width and height
+
+var calculateRadiusBasedOnAffectedCases = function calculateRadiusBasedOnAffectedCases(comunidad, dataset) {
+  var entry = dataset.find(function (item) {
     return item.name === comunidad;
-  });
-  return entry ? entry.value / max * 40 : 0;
+  }); // It is necessary to scale the numbers because they differ a lot from the previous and the actuals
+
+  return entry ? Math.log(affectedRadiusScale(entry.value)) * 5 + 1 : 0;
 };
 
 var svg = d3.select("body").append("svg").attr("width", 1024).attr("height", 800).attr("style", "background-color: #FBFAF0");
@@ -40607,11 +40607,10 @@ document.getElementById("Actual").addEventListener("click", function handleResul
   updateChart(_stats.statsActual);
 });
 
-var updateChart = function updateChart(stat) {
-  console.log("updating");
+var updateChart = function updateChart(stats) {
   svg.selectAll("circle").remove();
-  return svg.selectAll("circle").data(_communities.latLongCommunities).enter().append("circle").attr("class", "affected-marker").attr("r", function (d) {
-    return calculateRadiusBasedOnAffectedCases(d.name, stat);
+  svg.selectAll("circle").data(_communities.latLongCommunities).enter().append("circle").attr("class", "affected-marker").attr("r", function (d) {
+    return calculateRadiusBasedOnAffectedCases(d.name, stats);
   }).attr("cx", function (d) {
     return aProjection([d.long, d.lat])[0];
   }).attr("cy", function (d) {
@@ -40646,7 +40645,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53062" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52731" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

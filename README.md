@@ -7,7 +7,7 @@ In this challenge we want to obtain something like this:
 
 # Steps
 
-- We will take as starting example _02-pin-location-scale, let's copy the content from that folder and execute _npm install_.
+- We will take as starting example _02-pin-location-scale_, let's copy the content from that folder and execute _npm install_.
 
 ```bash
 npm install
@@ -57,30 +57,21 @@ _./src/communities.ts_
   },
 ```
 
-- In this case the maximum number of affected people of all communities will vary in function of the previous or actual data, that is why we define this maximum as a function depending on the date stat:
-
-_./src/index.ts_
-
-```typescript
-const maxAffected = (stats: ResultEntry[]) => {
-  return stats.reduce(
-  (max, item) => (item.value > max ? item.value : max), 0)
-};
-```
-- Instead of creating a scale map affected to radius size we will calculate the size of the circle directly in the function calculateRaiusOnAffectedCases. What we return is the division between the number of cases in a community and the maximum number of cases of all the comunities (maxAffected) and multiply it by 40 pixels:
+- If we compare the cases of covid-19 in principles of 2020 with the cases in one day in April 2021 the difference is enormous, previously the cases round between [0,174] infections daily and actually the cases round between [39,2626] infections daily, that is why it will be necessary to scale the data.
+- In this case, I will use the same maxAffected function which calculates the maximum of cases in the previous stats. The function affectedRadiusScale returns a radius in function of the given value of infections, but if we insert for example the incidents of Madrid on 12th April 2021 the circle is enormous, that is why after calculating this radius we will apply the logarithmic function, we will obtain a number bigger than 0 and probably lower than 3, so we multiply this number per 5 pixels. I have also decided to sum later 1 pixel because in the case of Galicia (3 infections) the circle was not appreciable at sight.
 
 _./src/index.ts_
 
 ```typescript
 const calculateRadiusBasedOnAffectedCases = (
   comunidad: string,
-  stats: ResultEntry[]
+  dataset: ResultEntry[]
 ) => {
-  var max = <number>maxAffected(stats);
-  const entry = stats.find((item) => item.name === comunidad);
-  
-  return entry ? (entry.value/max)*40 : 0;
-}
+  const entry = dataset.find((item) => item.name === comunidad);
+
+  // It is necessary to scale the numbers because they differ a lot from the previous and the actuals
+  return entry ? Math.log(affectedRadiusScale(entry.value))*5 + 1 : 0;
+};
 ```
 
 - I have changed the map color and the circles' color and transparency:
