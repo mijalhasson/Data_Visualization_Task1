@@ -130,3 +130,22 @@ document
     updateChart(statsActual);
   });
 ```
+
+
+#### Fellowship:
+- Fran Florido helped me telling me I had to incorporate at the beginning of the folder _./src/stats.ts_ 
+
+```diff
+export interface ResultEntry {
+  name: string;
+  value: number;
+}
+```
+
+- Rafa Haba told me that Navarra was missing in the stats and I told him that I saw that Ceuta and Melilla were also missing. Moreover he told me to be careful because it was necessary to have the same names of the communities in all the folders (for the second task).
+
+- For the second task, I told Carlos Sánchez and Fran Florido that it was necessary to ".remove()" the path first because they said that it wasn't changing from the initial one.
+
+- Carlos Sánchez showed me a web page (https://dillinger.io/) to write the README.md folders easier. Then I showed this same webpage to Pablo Yañez.
+
+- I gave Pablo Yañez the hint to put the same ame scale and translation than the one used in the Europe map and then play with the numbers because he was not able to paint the map of Germany.
